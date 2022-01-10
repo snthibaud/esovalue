@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
-from math import e, sqrt
+from math import e, sqrt, log
 
 
 @dataclass
@@ -82,11 +82,12 @@ def calculate_eso_prices(root: TrinomialNode, k: float, dt: float, s: float, r: 
         if level:
             levels.append(level)
     leaves = levels[-1]
+    total_steps = len(levels)
     for n in leaves:
-        n.option_value = max(0.0, n.stock_value - k if len(levels)*dt >= v else 0)
+        n.option_value = max(0.0, n.stock_value - k if (total_steps-1)*dt >= v else 0)
     for i in range(len(levels)-2, -1, -1):
         for node in levels[i]:
-            vested = (i + 1) * dt >= v
+            vested = i * dt >= v
             if vested and m and node.stock_value >= k*m:
                 node.option_value = node.stock_value - k
             else:
@@ -95,8 +96,9 @@ def calculate_eso_prices(root: TrinomialNode, k: float, dt: float, s: float, r: 
                 pd = -a + b
                 pm = 4*b
                 pu = a + b
-                option_value = (1-er*dt)*present_value(
+                er_dt = log(1+er)*dt
+                option_value = (1-er_dt)*present_value(
                     pd*node.down.option_value + pm*node.middle.option_value + pu*node.up.option_value, dt, r)
                 if vested:
-                    option_value += er*dt*max(node.stock_value-k, 0)
+                    option_value += er_dt*max(node.stock_value-k, 0)
                 node.option_value = option_value
