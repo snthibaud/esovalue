@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "esovalue"
-version = "0.1.2"
+version = "0.1.3"
 description = "Valuation of employee stock options"
 readme = 'README.md'
 authors = ["Stéphane Thibaud <snthibaud@gmail.com>"]
+url = "https://github.com/snthibaud/esovalue"
 
 [tool.poetry.dependencies]
 python = ">=3.5"
