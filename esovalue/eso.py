@@ -22,7 +22,7 @@ def value_eso(strike_price: float, stock_price: Optional[float], volatility: flo
     :return: Value in same currency as given strike price
     """
     dt = expiration_years / iterations
-    root = get_trinomial_tree(iterations)
+    root = get_trinomial_tree(iterations+1)
     set_stock_prices(stock_price if stock_price else strike_price, e**(volatility*sqrt(3*dt)), root)
     calculate_eso_prices(root, strike_price, dt, volatility, risk_free_rate, dividend_rate, exit_rate, vesting_years,
                          m)
