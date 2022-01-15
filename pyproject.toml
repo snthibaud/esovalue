@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "esovalue"
-version = "0.1.6"
+version = "0.1.7"
 description = "Valuation of employee stock options"
 readme = 'README.md'
 authors = ["Stéphane Thibaud <snthibaud@gmail.com>"]
@@ -8,9 +8,14 @@ repository = "https://github.com/snthibaud/esovalue"
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.5"
+python = ">=3.7"
+mpmath = "*"
+gmpy = "*"
 
 [tool.poetry.dev-dependencies]
+hypothesis = "*"
+pytest = "*"
+pytest-xdist = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

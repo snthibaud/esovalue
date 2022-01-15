@@ -1,12 +1,15 @@
 from dataclasses import dataclass
 from typing import Optional
 from math import e, sqrt, log
+from mpmath import mpf, ln
+
+ZERO = mpf("0")
 
 
 @dataclass
 class TrinomialNode:
-    stock_value: Optional[float] = None
-    option_value: Optional[float] = None
+    stock_value: Optional[mpf] = None
+    option_value: Optional[mpf] = None
     up: Optional['TrinomialNode'] = None
     middle: Optional['TrinomialNode'] = None
     down: Optional['TrinomialNode'] = None
@@ -26,7 +29,7 @@ def get_trinomial_tree(depth: int) -> TrinomialNode:
     return lattice[0][0]
 
 
-def set_stock_prices(s0: float, u: float, root: TrinomialNode):
+def set_stock_prices(s0: mpf, u: mpf, root: TrinomialNode):
     q = [(s0, root, True, True)]
     while q:
         s, n, h, l = q.pop()
@@ -39,7 +42,7 @@ def set_stock_prices(s0: float, u: float, root: TrinomialNode):
             q.append((s, n.middle, False, False))
 
 
-def present_value(fv: float, dt: float, r: float):
+def present_value(fv: mpf, dt: mpf, r: mpf):
     """
     Calculate present value
     :param fv: Future value
@@ -50,8 +53,8 @@ def present_value(fv: float, dt: float, r: float):
     return e**(-r*dt)*fv
 
 
-def calculate_eso_prices(root: TrinomialNode, k: float, dt: float, s: float, r: float, q: float, er: float, v: float,
-                         m: Optional[float]):
+def calculate_eso_prices(root: TrinomialNode, k: mpf, dt: mpf, s: mpf, r: mpf, q: mpf, er: mpf, v: mpf,
+                         m: Optional[mpf]):
     """
     Calculate the price of an employee stock option over time
     :param root: Root node
@@ -84,19 +87,19 @@ def calculate_eso_prices(root: TrinomialNode, k: float, dt: float, s: float, r: 
     leaves = levels[-1]
     total_steps = len(levels)
     for n in leaves:
-        n.option_value = max(0.0, n.stock_value - k if (total_steps-1)*dt >= v else 0)
+        n.option_value = n.stock_value - k if (total_steps-1)*dt >= v else ZERO
     for i in range(len(levels)-2, -1, -1):
         for node in levels[i]:
             vested = i * dt >= v
             if vested and m and node.stock_value >= k*m:
                 node.option_value = node.stock_value - k
             else:
-                a = sqrt(dt/(12*s**2))*(r-q-s**2/2)
+                a = sqrt(dt/(12*s**2))*(r-q-s**2/2) if s > 0 else 0
                 b = 1/6
                 pd = -a + b
                 pm = 4*b
                 pu = a + b
-                er_dt = log(1+er)*dt
+                er_dt = min(1, ln(1+er)*dt)
                 option_value = (1-er_dt)*present_value(
                     pd*node.down.option_value + pm*node.middle.option_value + pu*node.up.option_value, dt, r)
                 if vested:
