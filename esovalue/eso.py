@@ -1,6 +1,7 @@
 from math import sqrt, e
 from typing import Optional
-from mpmath import mpf
+from mpmath import mpf, mp
+mp.dps = 100
 
 from esovalue.trinomial_tree import get_trinomial_tree, set_stock_prices, calculate_eso_prices
 
@@ -22,9 +23,13 @@ def value_eso(strike_price: mpf, stock_price: Optional[mpf], volatility: mpf, ri
     :param m: Strike price multiplier for early exercise (exercise when the strike_price*m >= stock_price)
     :return: Value in same currency as given strike price
     """
+    strike_price, stock_price, volatility, risk_free_rate, dividend_rate, exit_rate, vesting_years, expiration_years, m\
+        = [mpf(v) if v else v
+           for v in [strike_price, stock_price, volatility, risk_free_rate, dividend_rate,
+                     exit_rate, vesting_years, expiration_years, m]]
     dt = expiration_years / iterations
     root = get_trinomial_tree(iterations+1)
-    set_stock_prices(stock_price if stock_price else strike_price, e**(volatility*sqrt(3*dt)), root)
+    set_stock_prices(strike_price if stock_price is None else stock_price, e**(volatility*sqrt(3*dt)), root)
     calculate_eso_prices(root, strike_price, dt, volatility, risk_free_rate, dividend_rate, exit_rate, vesting_years,
                          m)
     return max(mpf(0), root.option_value)
