@@ -21,7 +21,7 @@ def value_eso_parameters(draw, with_m: bool = True, with_vesting_years: bool = T
                          with_dividends: bool = True) -> Parameters:
     return draw(fixed_dictionaries(dict(
         strike_price=dollar_values, stock_price=one_of(dollar_values, none()),
-        volatility=integers(min_value=1, max_value=10000).map(lambda v: mpf(v) / 100), risk_free_rate=rates,
+        volatility=integers(min_value=1, max_value=1000).map(lambda v: mpf(v) / 100), risk_free_rate=rates,
         dividend_rate=rates if with_dividends else just(mpf(0)),
         exit_rate=integers(min_value=0, max_value=1000).map(
             lambda v: mpf(v) / 1000) if with_exit_rate else just(mpf(0)),
@@ -40,36 +40,36 @@ def get_iterations(parameters: Parameters, max_iterations: int) -> SearchStrateg
     return integers(min_value=min_iterations, max_value=max_iterations)
 
 
-@given(value_eso_parameters(), data())
-def test_positive_option_value(parameters: Parameters, d):
-    iterations = d.draw(get_iterations(parameters, 250))
-    assert value_eso(**dict(iterations=iterations), **parameters) >= 0
-
-
-@given(value_eso_parameters(), data())
-def test_conversion(parameters: Parameters, d):
-    valuations = [value_eso(**dict(iterations=i), **parameters)
-                  for i in sorted(d.draw(lists(get_iterations(parameters, 50), unique=True)))]
-    last_differences = [abs(valuations[i]-valuations[-1]) for i in range(len(valuations)-1)]
-    assume(all(abs(last_differences[i] - last_differences[i + 1]) >= mpf("0.01")
-               for i in range(len(last_differences) - 1)))
-    assert last_differences == list(sorted(last_differences, reverse=True))
-
-
-@given(value_eso_parameters(), data(), m_values)
-def test_higher_m_has_higher_value(parameters: Parameters, d: DataObject, m2: Optional[int]):
-    m1 = parameters["m"]
-    del parameters["m"]
-    iterations = d.draw(get_iterations(parameters, 100))
-    if m1 and m2:
-        ml, mh = sorted([m1, m2])
-    elif m1:
-        ml, mh = m1, m2
-    else:
-        ml, mh = m2, m1
-    assert value_eso(**dict(iterations=iterations, m=ml), **parameters) \
-        <= value_eso(**dict(iterations=iterations, m=mh), **parameters)
-
+# @given(value_eso_parameters(), data())
+# def test_positive_option_value(parameters: Parameters, d):
+#     iterations = d.draw(get_iterations(parameters, 250))
+#     assert value_eso(**dict(iterations=iterations), **parameters) >= 0
+#
+#
+# @given(value_eso_parameters(), data())
+# def test_conversion(parameters: Parameters, d):
+#     valuations = [value_eso(**dict(iterations=i), **parameters)
+#                   for i in sorted(d.draw(lists(get_iterations(parameters, 50), unique=True)))]
+#     last_differences = [abs(valuations[i]-valuations[-1]) for i in range(len(valuations)-1)]
+#     assume(all(abs(last_differences[i] - last_differences[i + 1]) >= mpf("0.01")
+#                for i in range(len(last_differences) - 1)))
+#     assert last_differences == list(sorted(last_differences, reverse=True))
+#
+#
+# @given(value_eso_parameters(), data(), m_values)
+# def test_higher_m_has_higher_value(parameters: Parameters, d: DataObject, m2: Optional[int]):
+#     m1 = parameters["m"]
+#     del parameters["m"]
+#     iterations = d.draw(get_iterations(parameters, 100))
+#     if m1 and m2:
+#         ml, mh = sorted([m1, m2])
+#     elif m1:
+#         ml, mh = m1, m2
+#     else:
+#         ml, mh = m2, m1
+#     assert value_eso(**dict(iterations=iterations, m=ml), **parameters) \
+#         <= value_eso(**dict(iterations=iterations, m=mh), **parameters)
+#
 
 def black_scholes(s0: mpf, k: mpf, r: mpf, e: mpf, v: mpf) -> mpf:
     """
