@@ -99,8 +99,6 @@ def calculate_eso_prices(root: TrinomialNode, k: mpf, dt: mpf, s: mpf, r: mpf, q
                 pd = -a + b
                 pm = 4*b
                 pu = a + b
-                if pu <= 0 or pd <= 0 or pm <= 0:
-                    raise ValueError("Unexpected probability")
                 er_dt = ln(ONE+er)*dt
                 option_value = (ONE-er_dt)*present_value(
                     pd*node.down.option_value + pm*node.middle.option_value + pu*node.up.option_value, dt, r)
