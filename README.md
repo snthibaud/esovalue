@@ -1,6 +1,7 @@
 # ESO-value
 Receiving stock options from your company? Wondering what they are worth? ESO-value calculates the value of
 Employee Stock Options based on the Hull-White model[1][2].
+This library is used in the [ESO valuation app](https://eso.stephanethibaud.xyz/).
 
 ## Installation
 Run `pip install esovalue`
