@@ -23,6 +23,7 @@ pytest-xdist = "*"
 hvplot = "*"
 networkx = "*"
 scipy = ">1.6.1"
+notebook = ">=6.4.12"
 jupyter = "^1.0.0"
 
 [build-system]
