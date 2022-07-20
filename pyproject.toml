@@ -14,6 +14,7 @@ license = "MIT"
 python = ">=3.9,<3.11"
 mpmath = "*"
 gmpy = "*"
+Pillow = ">=9.1.1"
 
 [tool.poetry.dev-dependencies]
 hypothesis = "*"
