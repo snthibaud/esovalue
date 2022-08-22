@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "esovalue"
-version = "0.1.12"
+version = "0.1.13"
 description = "Valuation of employee stock options"
 readme = 'README.md'
 authors = ["Stéphane Thibaud <snthibaud@gmail.com>"]
@@ -15,6 +15,7 @@ python = ">=3.9,<3.11"
 mpmath = "*"
 gmpy = "*"
 Pillow = ">=9.1.1"
+mistune = ">=2.0.3"
 
 [tool.poetry.dev-dependencies]
 hypothesis = "*"
