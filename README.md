@@ -13,6 +13,7 @@ from esovalue.eso import value_eso
 value_eso(strike_price=50, stock_price=50, volatility=0.3, risk_free_rate=0.075,
           dividend_rate=0.025, exit_rate=0.03, vesting_years=3, expiration_years=10, 
           iterations=1000, m=3)
+```
 ### Parameters
 | Name              | Meaning |
 |-------------------|---------|
@@ -26,7 +27,6 @@ value_eso(strike_price=50, stock_price=50, volatility=0.3, risk_free_rate=0.075,
 | `expiration_years` | Years until expiration |
 | `volatility`       | Volatility (standard deviation of returns) |
 | `m`                | Strike multiplier for early exercise (`exercise when strike_price * m >= stock_price`) |
-
 
 ## References
 [1]: Hull, J, and White, A:  How to Value Employee Stock Options Financial Analysts Journal, Vol. 60, No. 1,
