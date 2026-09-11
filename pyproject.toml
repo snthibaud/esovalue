@@ -1,35 +1,33 @@
-[tool.poetry]
+[project]
 name = "esovalue"
-version = "0.1.14"
+version = "0.1.15"
 description = "Valuation of employee stock options"
-readme = 'README.md'
-authors = ["Stéphane Thibaud <snthibaud@gmail.com>"]
-repository = "https://github.com/snthibaud/esovalue"
+readme = "README.md"
+authors = [{ name = "Stéphane Thibaud", email = "snthibaud@gmail.com" }]
 license = "MIT"
+requires-python = ">=3.9"
+dependencies = [
+    "mpmath",
+]
 
-[tool.poetry.urls]
+[project.urls]
+repository = "https://github.com/snthibaud/esovalue"
 "ESO valuation app" = "https://eso.stephanethibaud.xyz/"
 
-[tool.poetry.dependencies]
-python = ">=3.9,<3.11"
-mpmath = "*"
-gmpy = "*"
-Pillow = ">=9.3.0"
-mistune = ">=2.0.3"
-certifi = ">=2022.12.07"
-
-[tool.poetry.dev-dependencies]
-hypothesis = "*"
-pytest = "*"
-pytest-xdist = "*"
-hvplot = "*"
-networkx = "*"
-scipy = ">1.6.1"
-notebook = ">=6.4.12"
-jupyter = "^1.0.0"
-nbconvert = ">=6.3"
-jupyter-core = ">=4.11.2"
+[dependency-groups]
+dev = [
+    "hypothesis",
+    "pytest",
+    "pytest-xdist",
+    "hvplot",
+    "networkx",
+    "scipy>1.6.1",
+    "notebook>=6.4.12",
+    "jupyter~=1.0",
+    "nbconvert>=6.3",
+    "jupyter-core>=4.11.2",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
