@@ -1,0 +1,5 @@
+**/.hypothesis/**
+.cache/**
+.idea/**
+*.pyc
+*.ipynb
